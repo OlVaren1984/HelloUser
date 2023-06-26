@@ -37,11 +37,7 @@ class ViewController: UIViewController {
         
         nameUserTextView.textColor = .black
         paswordTextVew.textColor = .black
-        
-    //    performSegue(withIdentifier: "ShowDetails", sender: nil)
-        
     }
-    
     
     @IBAction func loginInButton() {
         //проверяем текстовое поле пустое или нет
@@ -95,17 +91,10 @@ class ViewController: UIViewController {
         
         // Ищем пользователя с введенным логином и паролем в массиве users
         if users.first(where: { $0.username == username && $0.password == password }) != nil {
-            
-            // Если пользователь найден, переходим на следующий экран
-          //  let mainViewController = UserListViewController()
-      //      navigationController?.pushViewController(mainViewController, animated: true)
         } else {
             // Если пользователь не найден, вывести сообщение об ошибке
             showAlert(with: errorName, and: errorPasswordNumberTwo)
         }
-        
-  //   performSegue(withIdentifier: "ShowDetails", sender: nil)
-        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -114,7 +103,6 @@ class ViewController: UIViewController {
             userDetailsVC.userName = nameUserTextView.text //sender as? String
         }
     }
-    
     
     private func alertUserName() {
         showAlert(with: errorСlue, and: errorNameOleg)
@@ -127,19 +115,13 @@ class ViewController: UIViewController {
     @IBAction func unwindSegueToMainScreen(segue: UIStoryboardSegue){
         guard segue.identifier == "ShowDetails" else { return }
         guard segue.source is UserListViewController else { return }
-      //  nameUserTextView.text = fromVC.UserListViewController.text
-        
     }
     
-    
     @IBAction func userNameButton() {
-        
-        
     }
     
     @IBAction func passwordButton() {
         paswordTextVew.isSecureTextEntry = true
-        
     }
     
     // Всплывающее окно об ошибке заполнения поля Имя
