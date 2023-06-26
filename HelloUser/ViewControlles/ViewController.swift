@@ -115,6 +115,9 @@ class ViewController: UIViewController {
     @IBAction func unwindSegueToMainScreen(segue: UIStoryboardSegue){
         guard segue.identifier == "ShowDetails" else { return }
         guard segue.source is UserListViewController else { return }
+       
+            self.nameUserTextView.text = ""
+            self.paswordTextVew.text = ""
     }
     
     @IBAction func userNameButton() {
