@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     @IBOutlet var forgotUserName: UIButton!
     @IBOutlet var forgotPasswordButton: UIButton!
     
+    // MARK: Private controller variables on error
     private let errorOk = "OK"
     private let errorName = "Ошибка"
     private let errorСlue = "Подсказка!"
@@ -29,14 +30,30 @@ class ViewController: UIViewController {
     private let errorPasswordNumberThree = "Произошла ошибка, пользователь не найден"
     private let errorCorrectPassword = "Неправильный пароль, Ваш пароль: - Пароль"
     
+    //MARK: Private color
+    private let primatyColorView = UIColor(
+        red: 210/255,
+        green: 109/255,
+        blue: 128/255,
+        alpha: 1
+    )
+    private let secondaryColorView = UIColor(
+        red: 107/255,
+        green: 148/255,
+        blue: 230/255,
+        alpha: 1
+    )
     
     var userName:String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Градиент экрана, цвет шрифта вводимых данных
+        addVerticalGradientLauerView(topColor: primatyColorView, bottonColor: secondaryColorView)
         
         nameUserTextView.textColor = .black
         paswordTextVew.textColor = .black
+    
     }
     
     @IBAction func loginInButton() {
@@ -50,7 +67,7 @@ class ViewController: UIViewController {
             showAlert(with: errorName, and: errorNumberUser)
             return
         }
-        
+    
         nameUserTextView.text = imputText
         
         //проверяем текстовое поле пустое или нет
@@ -66,6 +83,8 @@ class ViewController: UIViewController {
         }
         
         paswordTextVew.text = imputTextPassword
+      
+        
         
         struct User {
             let username: String
@@ -96,12 +115,15 @@ class ViewController: UIViewController {
             showAlert(with: errorName, and: errorPasswordNumberTwo)
         }
     }
-    
+    // передаем имя пользователя на второй экран
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetails" {
             let userDetailsVC = segue.destination as! UserListViewController
-            userDetailsVC.userName = nameUserTextView.text //sender as? String
+           userDetailsVC.userName = nameUserTextView.text
+            //sender as? String
+            
         }
+      
     }
     
     private func alertUserName() {
@@ -111,13 +133,12 @@ class ViewController: UIViewController {
     private func alertNumber() {
         showAlert(with: errorСlue, and: errorCorrectPassword)
     }
-    
+    // кнопка возврата на первый экран "Выйти"
     @IBAction func unwindSegueToMainScreen(segue: UIStoryboardSegue){
         guard segue.identifier == "ShowDetails" else { return }
         guard segue.source is UserListViewController else { return }
-       
-            self.nameUserTextView.text = ""
-            self.paswordTextVew.text = ""
+        nameUserTextView.text = nil
+        paswordTextVew.text = nil
     }
     
     @IBAction func userNameButton() {
@@ -153,7 +174,7 @@ extension ViewController {
     
 }
 
-//MARK: - UITextFieldDelegate
+//MARK: - Text Filed Delegate
 extension ViewController: UITextFieldDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super .touchesBegan(touches, with: event)
@@ -170,4 +191,15 @@ extension ViewController: UITextFieldDelegate {
         
     }
 }
-
+// MARK: - Set background color
+extension ViewController {
+    func addVerticalGradientLauerView(topColor: UIColor, bottonColor: UIColor) {
+        let gradient = CAGradientLayer()
+        gradient.frame = view.bounds // задаем границы, как будет располагаться цвет  - по границам экрана (view)
+        gradient.colors = [topColor.cgColor, bottonColor.cgColor]
+        gradient.locations = [0.0, 1.0] // задаем границы от куда начать и где закончить, весь экран площадь - это 1, соответственно от 0 до   1
+        gradient.startPoint = CGPoint(x: 0, y: 0) // передаем координаты, откуда начать
+        gradient.endPoint = CGPoint(x: 0, y: 1) // передаем координаты, где закончить 
+        view.layer.insertSublayer(gradient, at: 0) // вызываем градиент
+    }
+}
