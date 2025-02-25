@@ -19,6 +19,8 @@
 		0A714F702A3878A500FFCA29 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A714F6E2A3878A500FFCA29 /* Main.storyboard */; };
 		0A714F722A3878A800FFCA29 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A714F712A3878A800FFCA29 /* Assets.xcassets */; };
 		0A714F752A3878A800FFCA29 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A714F732A3878A800FFCA29 /* LaunchScreen.storyboard */; };
+		7CB8CFCF2D615AAD00DC12CB /* ErrorMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB8CFCE2D615AAD00DC12CB /* ErrorMessages.swift */; };
+		7CC925E72D6D07140064243F /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC925E62D6D07140064243F /* AppColors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +38,8 @@
 		0A714F712A3878A800FFCA29 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0A714F742A3878A800FFCA29 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0A714F762A3878A800FFCA29 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7CB8CFCE2D615AAD00DC12CB /* ErrorMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessages.swift; sourceTree = "<group>"; };
+		7CC925E62D6D07140064243F /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +122,8 @@
 		0A714F802A387C0D00FFCA29 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				7CC925E62D6D07140064243F /* AppColors.swift */,
+				7CB8CFCE2D615AAD00DC12CB /* ErrorMessages.swift */,
 				0A4B34CD2A3C362E000A0CCF /* ApplicationUser.swift */,
 				0A4B34CF2A3C367E000A0CCF /* Hobbies.swift */,
 				0A4B34D12A3C3D0D000A0CCF /* Questions.swift */,
@@ -199,10 +205,12 @@
 				0A57A7D32A408626001B2D13 /* MainTwoViewController.swift in Sources */,
 				0A4B34D62A404DA8000A0CCF /* UserListViewController.swift in Sources */,
 				0A4B34D02A3C367E000A0CCF /* Hobbies.swift in Sources */,
+				7CC925E72D6D07140064243F /* AppColors.swift in Sources */,
 				0A714F6D2A3878A500FFCA29 /* ViewController.swift in Sources */,
 				0A714F692A3878A500FFCA29 /* AppDelegate.swift in Sources */,
 				0A4B34D22A3C3D0D000A0CCF /* Questions.swift in Sources */,
 				0A714F6B2A3878A500FFCA29 /* SceneDelegate.swift in Sources */,
+				7CB8CFCF2D615AAD00DC12CB /* ErrorMessages.swift in Sources */,
 				0A4B34CE2A3C362E000A0CCF /* ApplicationUser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

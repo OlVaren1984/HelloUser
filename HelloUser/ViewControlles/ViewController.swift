@@ -17,128 +17,109 @@ class ViewController: UIViewController {
     @IBOutlet var forgotUserName: UIButton!
     @IBOutlet var forgotPasswordButton: UIButton!
     
-    // MARK: Private controller variables on error
-    private let errorOk = "OK"
-    private let errorName = "Ошибка"
-    private let errorСlue = "Подсказка!"
-    private let errorNameUser = "Произошла ошибка, Вы не заполнили имя пользователя, введите имя"
-    private let errorNumberUser = "Произошла ошибка, Вы использовали число при вводе имени"
-    private let errorNameOleg = "Произошла ошибка, Вы не заполнили имя пользователя, Ваше имя: - Олег"
-    private let errorPassword = "Вы не ввели пароль, пожалуйтса введите правильный пароль, если вы не можете вспомнить - воспользуйтесь подсказкой!"
-    private let errorPasswordNumber = "Произошла ошибка, Вы использовали число при вводе пароля, если вы не можете вспомнить - воспользуйтесь подсказкой!"
-    private let errorPasswordNumberTwo = "Произошла ошибка, Вы ввели неправильный пароль"
-    private let errorPasswordNumberThree = "Произошла ошибка, пользователь не найден"
-    private let errorCorrectPassword = "Неправильный пароль, Ваш пароль: - Пароль"
-    
-    //MARK: Private color
-    private let primatyColorView = UIColor(
-        red: 210/255,
-        green: 109/255,
-        blue: 128/255,
-        alpha: 1
-    )
-    private let secondaryColorView = UIColor(
-        red: 107/255,
-        green: 148/255,
-        blue: 230/255,
-        alpha: 1
-    )
-    
     var userName:String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         //Градиент экрана, цвет шрифта вводимых данных
-        addVerticalGradientLauerView(topColor: primatyColorView, bottonColor: secondaryColorView)
+        GradientColors.applyGradient(to: view,
+                                     topColor:
+                                        AppColors.primatyColorView,
+                                     bottonColor:
+                                        AppColors.secondaryColorView)
+        
+        // Используем метод из GradientColors модель AppColors
+        GradientColors.applyGradient(to: view,
+                                     topColor:
+                                        AppColors.primatyColorView,
+                                     bottonColor:
+                                        AppColors.secondaryColorView)
+        
+        //Устаавливаем для полей ввода установлены делегаты
+        nameUserTextView.delegate = self
+        paswordTextVew.delegate = self
         
         nameUserTextView.textColor = .black
         paswordTextVew.textColor = .black
+        
+        // Открытие клавиатуры при фокусе на поле логина
+        nameUserTextView.becomeFirstResponder()
+        
+    }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Обнуляем текстовые поля каждый раз, когда экран появляется
+        // Оставляем условие если хотим обнулять оба поля
+        // nameUserTextView.text = nil
+        paswordTextVew.text = nil
     }
     
     @IBAction func loginInButton() {
-        //проверяем текстовое поле пустое или нет
-        guard let imputText = nameUserTextView.text, !imputText.isEmpty else {
-            showAlert(with: errorName, and: errorNameUser)
-            return
-        }
-        // проверяем число или нет
-        if let _ = Double(imputText) {
-            showAlert(with: errorName, and: errorNumberUser)
-            return
-        }
-    
-        nameUserTextView.text = imputText
         
-        //проверяем текстовое поле пустое или нет
-        guard let imputTextPassword = paswordTextVew.text,
-              !imputTextPassword.isEmpty else {
-            showAlert(with: errorName, and: errorPassword)
-            return // а иначе выходим из метода
-        }
-        // проверяем число или нет
-        if let _ = Double(imputTextPassword) {
-            showAlert(with: errorName, and: errorPasswordNumber)
+        // Проверяем, пустое ли поле имени пользователя
+        guard let inputText = nameUserTextView.text, !inputText.isEmpty else {
+            AlertManager.showAlert(on: self, with: ErrorMessages.errorName, and: ErrorMessages.errorNameOleg)
             return
         }
         
-        paswordTextVew.text = imputTextPassword
-      
-        
-        
-        struct User {
-            let username: String
-            let password: String
-        }
-        
-        let users = [
-            User(username: "admin", password: "admin"),
-            User(username: "Олег", password: "Пароль")
-        ]
-        
-        guard let username = nameUserTextView.text, !username.isEmpty else {
-            // Если логин не введен, вывести сообщение об ошибке
-            showAlert(with: errorName, and: errorOk)
+        // Проверяем, не является ли введенное имя числом
+        if let _ = Double(inputText) {
+            AlertManager.showAlert(on: self, with: ErrorMessages.errorName, and: ErrorMessages.errorNumberUser)
             return
         }
         
-        guard let password = paswordTextVew.text, !password.isEmpty else {
-            // Если пароль не введен, вывести сообщение об ошибке
-            showAlert(with: errorName, and: errorPasswordNumberTwo)
+        // Получаем список пользователей
+        let users = User.getUserData()
+        
+        // Проверяем, существует ли пользователь с таким именем в базе
+        guard users.contains(where: { $0.username == inputText }) else {
+            AlertManager.showAlert(on: self, with: ErrorMessages.errorName, and: ErrorMessages.errorLogin)
             return
         }
         
-        // Ищем пользователя с введенным логином и паролем в массиве users
-        if users.first(where: { $0.username == username && $0.password == password }) != nil {
-        } else {
-            // Если пользователь не найден, вывести сообщение об ошибке
-            showAlert(with: errorName, and: errorPasswordNumberTwo)
+        // Проверяем, пустое ли поле пароля
+        guard let inputTextPassword = paswordTextVew.text, !inputTextPassword.isEmpty else {
+            AlertManager.showAlert(on: self, with: ErrorMessages.errorName, and: ErrorMessages.errorPassword, passwordField: paswordTextVew)
+            return
         }
+        
+        // Проверяем, не является ли пароль числом
+        if let _ = Double(inputTextPassword) {
+            AlertManager.showAlert(on: self, with: ErrorMessages.errorName, and: ErrorMessages.errorPasswordNumber, passwordField: paswordTextVew)
+            return
+        }
+        
+        // Проверяем, совпадает ли пароль с сохраненным у пользователя
+        if users.first(where: { $0.username == inputText && $0.password == inputTextPassword }) == nil {
+            AlertManager.showAlert(on: self, with: ErrorMessages.errorName, and: ErrorMessages.errorPasswordNumberTwo, passwordField: paswordTextVew)
+        }
+        
+        
+        
     }
     // передаем имя пользователя на второй экран
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetails" {
             let userDetailsVC = segue.destination as! UserListViewController
-           userDetailsVC.userName = nameUserTextView.text
-            //sender as? String
-            
+            // Передаем имя пользователя, только если оно задано
+            if let username = nameUserTextView.text, !username.isEmpty {
+                userDetailsVC.userName = username
+            } else {
+                userDetailsVC.userName = nil  // Если имя пустое, передаем nil
+            }
         }
-      
     }
     
-    private func alertUserName() {
-        showAlert(with: errorСlue, and: errorNameOleg)
-    }
-    
-    private func alertNumber() {
-        showAlert(with: errorСlue, and: errorCorrectPassword)
-    }
     // кнопка возврата на первый экран "Выйти"
     @IBAction func unwindSegueToMainScreen(segue: UIStoryboardSegue){
         guard segue.identifier == "ShowDetails" else { return }
         guard segue.source is UserListViewController else { return }
+        // Обнуляем поля при возврате на главный экран
         nameUserTextView.text = nil
         paswordTextVew.text = nil
+        userName = nil  // Обнуляем переменную username
     }
     
     @IBAction func userNameButton() {
@@ -150,56 +131,57 @@ class ViewController: UIViewController {
     
     // Всплывающее окно об ошибке заполнения поля Имя
     @IBAction func forgotUserButton() {
-        alertUserName()
+        AlertManagerMessage.alertUserName(on: self)
     }
     
     // Всплывающее окно об ошибке заполнения поля пароль
     @IBAction func forgotPasswordUserButton() {
-        alertNumber()
+        AlertManagerMessage.alertNumber(on: self)
     }
-}
-
-//MARK: - UIAlertController
-extension ViewController {
-    private func showAlert(with title: String, and message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAktion = UIAlertAction(title: errorOk, style: .default) { _ in
-            //  self.nameUserTextView.text = nil
-            self.paswordTextVew.text = nil
-            //обнуление заполняемого поля ввода пароля
-        }
-        alert.addAction(okAktion)
-        present(alert, animated: true)
-    }
-    
 }
 
 //MARK: - Text Filed Delegate
 extension ViewController: UITextFieldDelegate {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super .touchesBegan(touches, with: event)
-        view.endEditing(true)
+    
+    // Открытие клавиатуры при клике на поле
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == nameUserTextView {
+            nameUserTextView.becomeFirstResponder()
+        }
     }
+    
+    // Переход к следующему полю или выполнение действия
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == nameUserTextView {
+            // Скрыть клавиатуру для имени пользователя и перейти к паролю
             textField.resignFirstResponder()
             paswordTextVew.becomeFirstResponder()
-        } else {
-            loginInButton()
+        } else if textField == paswordTextVew {
+            // Если пароль введен, проверяем вход и выполняем переход
+            textField.resignFirstResponder()
+            loginInButton() // Логика для проверки входа
+            
+            // Если вход успешен, переходим на следующий экран
+            if let username = nameUserTextView.text, let password = paswordTextVew.text, !username.isEmpty, !password.isEmpty {
+                let users = User.getUserData()
+                if users.first(where: { $0.username == username && $0.password == password }) != nil {
+                    performSegue(withIdentifier: "ShowDetails", sender: nil)
+                } else {
+                    AlertManager.showAlert(on: self, with:ErrorMessages.errorName, and:ErrorMessages.errorPasswordNumberTwo)
+                }
+            } else {
+                AlertManager.showAlert(on: self, with:ErrorMessages.errorName, and:ErrorMessages.errorAllFields)
+            }
         }
         return true
-        
+    }
+    
+    // Закрытие клавиатуры при касании за пределами полей ввода
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        view.endEditing(true)
     }
 }
-// MARK: - Set background color
-extension ViewController {
-    func addVerticalGradientLauerView(topColor: UIColor, bottonColor: UIColor) {
-        let gradient = CAGradientLayer()
-        gradient.frame = view.bounds // задаем границы, как будет располагаться цвет  - по границам экрана (view)
-        gradient.colors = [topColor.cgColor, bottonColor.cgColor]
-        gradient.locations = [0.0, 1.0] // задаем границы от куда начать и где закончить, весь экран площадь - это 1, соответственно от 0 до   1
-        gradient.startPoint = CGPoint(x: 0, y: 0) // передаем координаты, откуда начать
-        gradient.endPoint = CGPoint(x: 0, y: 1) // передаем координаты, где закончить 
-        view.layer.insertSublayer(gradient, at: 0) // вызываем градиент
-    }
-}
+
+
+
